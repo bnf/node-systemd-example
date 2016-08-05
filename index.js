@@ -12,14 +12,14 @@ const server = http.createServer((req, res) => {
 	}, 5000);
 });
 
-hgc.prepare(server);
+hgc.inject(server);
 
 process.on('SIGHUP', function() {
 	sd.notify("STOPPING=1");
 	/* 111 is convention between this process and the systemd service.
 	 * .. trigger systemd to restart the process. */
 	process.exitCode = 111;
-	hgc.close(server);
+	server.close();
 });
 
 server.listen(handle, () => {
