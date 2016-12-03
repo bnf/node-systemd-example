@@ -16,13 +16,13 @@ const server = http.createServer((req, res) => {
 });
 
 const exit = (code, status) => {
-	status = status || 'Terminating...';
+	status = status || 'Shutting down...';
 	return () => {
 		sd.notify("STOPPING=1\nSTATUS=" + status);
 		server.emit(hgc.close);
 		server.close(() => {
 			sd.watchdog.stop();
-			if (code) {
+			if (code !== undefined) {
 				process.exitCode = code;
 			}
 		});
@@ -30,7 +30,7 @@ const exit = (code, status) => {
 };
 
 hgc.inject(server);
-server.on('connection', eoi.onIdle(exit(), 30000));
+server.on('connection', eoi.onIdle(exit(undefined, 'Shutting down (idle)...'), 3000));
 
 server.listen(handle, () => {
 	sd.notify("READY=1");
