@@ -29,7 +29,10 @@ server.on('connection', eoi.onIdle(close(), 30000));
 
 server.listen(handle, () => {
 	sd.notify("READY=1");
-	/* 111 is convention between this process and the systemd service.
-	 * .. trigger systemd to restart the process. */
-	process.on('SIGHUP', close(111));
+
+	/* We want to restart the entire service on SIGHUP (to perform reload),
+	 * so let#s inform systemd about this with the special exit code 133.
+	 * The service file RestartForceExitStatus=133 so that this results in
+	 * a service restart. */
+	process.on('SIGHUP', close(133));
 });
