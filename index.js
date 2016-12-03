@@ -13,7 +13,7 @@ const server = http.createServer((req, res) => {
 	res.end('Hello World\n');
 });
 
-const close = (exitCode) => {
+const exit = (exitCode) => {
 	return () => {
 		process.exitCode = exitCode ? exitCode : 0;
 		sd.notify("STOPPING=1");
@@ -25,7 +25,7 @@ const close = (exitCode) => {
 };
 
 hgc.inject(server);
-server.on('connection', eoi.onIdle(close(), 30000));
+server.on('connection', eoi.onIdle(exit(), 30000));
 
 server.listen(handle, () => {
 	sd.notify("READY=1");
@@ -34,5 +34,5 @@ server.listen(handle, () => {
 	 * so let#s inform systemd about this with the special exit code 133.
 	 * The service file RestartForceExitStatus=133 so that this results in
 	 * a service restart. */
-	process.on('SIGHUP', close(133));
+	process.on('SIGHUP', exit(133));
 });
