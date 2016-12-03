@@ -19,7 +19,7 @@ const exit = (code, status) => {
 	status = status || 'Terminating...';
 	return () => {
 		sd.notify("STOPPING=1\nSTATUS=" + status);
-		server.emit('http-graceful-close');
+		server.emit(hgc.close);
 		server.close(() => {
 			sd.watchdog.stop();
 			if (code) {
