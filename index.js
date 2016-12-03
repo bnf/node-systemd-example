@@ -22,7 +22,9 @@ const exit = (code, status) => {
 		server.emit('http-graceful-close');
 		server.close(() => {
 			sd.watchdog.stop();
-			process.exitCode = code ? code : 0;
+			if (code) {
+				process.exitCode = code;
+			}
 		});
 	};
 };
