@@ -13,13 +13,14 @@ const server = http.createServer((req, res) => {
 	res.end('Hello World\n');
 });
 
-const exit = (exitCode) => {
+const exit = (code, status) => {
+	status = status || 'Terminating...';
 	return () => {
-		process.exitCode = exitCode ? exitCode : 0;
-		sd.notify("STOPPING=1");
+		sd.notify("STOPPING=1\nSTATUS=" + status);
 		server.emit('http-graceful-close');
 		server.close(() => {
 			sd.watchdog.stop();
+			process.exitCode = code ? code : 0;
 		});
 	};
 };
@@ -34,5 +35,9 @@ server.listen(handle, () => {
 	 * so let#s inform systemd about this with the special exit code 133.
 	 * The service file RestartForceExitStatus=133 so that this results in
 	 * a service restart. */
-	process.on('SIGHUP', exit(133));
+	process.on('SIGHUP', exit(133, 'Restarting...'));
+});
+
+process.on('exit', (code) => {
+	console.log(`About to exit with code: ${code}`);
 });
