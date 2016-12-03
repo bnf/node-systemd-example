@@ -24,7 +24,7 @@ const close = (exitCode) => {
 	};
 };
 
-server.on('connection', hgc.onConnection);
+hgc.inject(server);
 server.on('connection', eoi.onIdle(close(), 30000));
 
 server.listen(handle, () => {
