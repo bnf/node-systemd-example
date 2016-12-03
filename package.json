@@ -1,7 +1,7 @@
 {
   "name": "node-systemd-example",
   "version": "1.0.0",
-  "description": "Example app demonstrating systemd socket activation, graceful reload (for deployment) and exit-on-idle",
+  "description": "Example app demonstrating systemd socket activation, graceful reload (e.g. for deployment), watchdog and exit-on-idle",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/bnf/node-systemd-example/issues"
   },
-  "homepage": "https://github.com/bnf/node-systemd-example#readme"
+  "homepage": "https://github.com/bnf/node-systemd-example#readme",
+  "dependencies": {
+    "systemd-daemon": "^1.1.0"
+  }
 }

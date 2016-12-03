@@ -1,0 +1,23 @@
+[Unit]
+Description = node-systemd-example
+Requires = node-example.socket
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/node %h/src/node-systemd-example/index.js
+StandardOutput=syslog
+SyslogIdentifier=node-systemd-example
+
+# Restart on failure
+Restart=on-failure
+
+ExecReload=/bin/kill -HUP $MAINPID
+# Also restart on exit code 111 (which we use to trigger a reload)
+RestartForceExitStatus=111
+# ..but do not interpret exit code 111 as an error (as it's simply the reaction on ExecReload)
+SuccessExitStatus=111
+
+TimeoutStopSec=30s
+WatchdogSec=30s
+
+Environment=NODE_ENV=production
